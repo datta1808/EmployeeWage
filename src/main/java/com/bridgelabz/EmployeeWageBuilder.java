@@ -1,66 +1,48 @@
 package com.bridgelabz;
 
-public class EmployeeWageBuilder {
-    //constants
-    public static final int IS_FULL_TIME=0;
-    public static final int IS_PART_TIME=1;
-    //variables
-    private int noOfCompany=0;
-    private EmployeeWageComputation[] compEmpWageArray;
+public class EmployeeWageBuilder implements IComputeWage {
+    public static final int isPartTime = 1;
+    public static final int isFullTime = 2;
+    private int numOfCompany;
+    private final CompanyEmployeeWage[] empWageArray;
 
     public EmployeeWageBuilder() {
-        compEmpWageArray=new EmployeeWageComputation[5];
-    }
-    public void addCompanyEmpWage(String company, int empWagePerHour, int maxHoursAMonth, int workingDayMonth) {
-        compEmpWageArray[noOfCompany]=new EmployeeWageComputation(company, empWagePerHour, maxHoursAMonth, workingDayMonth);
-        noOfCompany++;
+        empWageArray = new CompanyEmployeeWage[5];
     }
 
-    private void computeEmpWage() {
-        for(int i=0; i<noOfCompany; i++) {
-            compEmpWageArray[i].setTotalEmpWage(this.computeEmpWage(compEmpWageArray[i]));
-            System.out.println(compEmpWageArray[i]);
-            System.out.println("\n");
+    @Override //annotation==>method is overridden in child class
+    public void addCompanyEmpWage(String company, int empRatePerHour, int numOfWorkingDays, int maximumHoursPerMonth) {
+        empWageArray[numOfCompany] = new CompanyEmployeeWage(company, empRatePerHour, numOfWorkingDays, maximumHoursPerMonth);
+        numOfCompany++;
+    }
+
+    @Override
+    public void computeEmpWage() {
+        for (int i = 0; i < numOfCompany; i++) {
+            empWageArray[i].setTotalEmpWage(this.computeEmpWage(empWageArray[i]));
+            System.out.println(empWageArray[i]);
         }
+
     }
 
-    private int computeEmpWage(EmployeeWageComputation employeewage) {
-        //variables
-        int empHours=0, totalEmpHours=0, totalWorkingDays=0;
-        //Computation
-        while(totalEmpHours<employeewage.maxHoursAMonth && totalWorkingDays<employeewage.workingDayMonth) {
-            totalWorkingDays++;
-            int empCheck=(int) (Math.floor(Math.random()*10)%3);
-            switch(empCheck) {
-                case IS_FULL_TIME:
-                    empHours=8;
+    private int computeEmpWage(CompanyEmployeeWage companyEmpWage) {
+        int empHours = 0, totalEmpHours = 0, totalWorkingDays = 0;
+        while (totalEmpHours <= companyEmpWage.maximumHoursPerMonth && totalWorkingDays < companyEmpWage.numOfWorkingDays) {
+            int check = (int) (Math.floor(Math.random() * 10) % 3);
+            switch (check) {
+                case isPartTime:
+                    empHours = 4;
                     break;
-                case IS_PART_TIME:
-                    empHours=4;
+                case isFullTime:
+                    empHours = 8;
                     break;
-
                 default:
-                    empHours=0;
+                    empHours = 0;
             }
-            if (totalEmpHours<96) {
-                totalEmpHours+=empHours;
-                System.out.println("Days : "+totalWorkingDays+"\tEmployee hour : "+empHours+"\tTotal hours "+totalEmpHours);
-            }
-            else {
-                totalEmpHours+=(100-totalEmpHours);
-                System.out.println("Days : "+totalWorkingDays+"\tEmployee hour : "+empHours+"\tTotal hours "+totalEmpHours);
-                break;
-            }
+            totalEmpHours += empHours;
+            totalWorkingDays += 1;
         }
-        return totalEmpHours*employeewage.empWagePerHour;
-    }
-    public static void main(String[] args) {
-        //Welcome statement
-        System.out.println("Welcome to Employee wage computation");
-        EmployeeWageBuilder empWage=new EmployeeWageBuilder();
-        empWage.addCompanyEmpWage("Amazon", 10, 100, 20);
-        empWage.addCompanyEmpWage("Flipkart", 8, 100, 22);
-        empWage.addCompanyEmpWage("eBay", 20, 100, 20);
-        empWage.computeEmpWage();
+        return totalEmpHours * companyEmpWage.empRatePerHour;
+
     }
 }
