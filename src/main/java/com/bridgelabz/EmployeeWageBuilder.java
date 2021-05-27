@@ -1,16 +1,18 @@
 package com.bridgelabz;
 
 public class EmployeeWageBuilder {
+    public static final int IS_PART_TIME = 1;
+    public static final int IS_FULL_TIME = 2;
+    public static final int WAGE_PER_HOUR = 20;
+    public static final int NO_OF_WORKING_DAYS = 20;
+    public static final int MAX_WORKING_HOURS = 100;
+
     public static void main(String[] args) {
-        final int IS_PART_TIME = 1;
-        final int IS_FULL_TIME = 2;
-        final int WAGE_PER_HOUR = 20;
-        final int NO_OF_WORKING_DAYS = 20;
 
-        int empHours = 0;
-        int totalSalary = 20;
+        int empHours = 0, totalEmpHours = 0, totalWorkingDays = 0;
 
-        for (int day = 1; day <= NO_OF_WORKING_DAYS; day++) {
+        while (totalEmpHours <= MAX_WORKING_HOURS && totalWorkingDays < NO_OF_WORKING_DAYS){
+            totalWorkingDays++;
             int empCheck = (int) ((Math.random() * 10) % 3);
 
             switch(empCheck) {
@@ -27,10 +29,11 @@ public class EmployeeWageBuilder {
                     empHours = 0;
             }
 
-            int salary = empHours * WAGE_PER_HOUR;
-            System.out.println(salary);
-            totalSalary += salary;
+            totalEmpHours += empHours;
+            System.out.println("Total working hours: " +totalEmpHours);
+            System.out.println("Total working days: " +totalWorkingDays);
         }
-        System.out.println("Total wage of Employee is: " + totalSalary);
+        int totalEmpWage = totalEmpHours * WAGE_PER_HOUR;
+        System.out.println("Total wage of Employee is: " + totalEmpWage);
     }
 }
