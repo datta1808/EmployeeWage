@@ -35,6 +35,7 @@ public class EmployeeWageBuilder {
     }
 
 
+
     public static void main(String[] args) {
         calculateTotalWage("Amazon",20, 2, 10);
         calculateTotalWage("flipkart",10, 4, 20);
