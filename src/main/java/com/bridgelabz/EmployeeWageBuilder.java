@@ -1,57 +1,66 @@
 package com.bridgelabz;
 
 public class EmployeeWageBuilder {
-    public static final int IS_PART_TIME = 1;
-    public static final int IS_FULL_TIME = 2;
+    //constants
+    public static final int IS_FULL_TIME=0;
+    public static final int IS_PART_TIME=1;
+    //variables
+    private int noOfCompany=0;
+    private EmployeeWageComputation[] compEmpWageArray;
 
-    private final String company;
-    private final int empRatePerHour;
-    private final int numOfWorkingDays;
-    private final int maxHoursPerMonth;
-    private int totalEmpWage;
-
-    public EmployeeWageBuilder(String company, int empRatePerHour, int numOfWorkingDays, int maxHoursPerMonth) {
-        this.company = company;
-        this.empRatePerHour = empRatePerHour;
-        this.numOfWorkingDays = numOfWorkingDays;
-        this.maxHoursPerMonth = maxHoursPerMonth;
+    public EmployeeWageBuilder() {
+        compEmpWageArray=new EmployeeWageComputation[5];
+    }
+    public void addCompanyEmpWage(String company, int empWagePerHour, int maxHoursAMonth, int workingDayMonth) {
+        compEmpWageArray[noOfCompany]=new EmployeeWageComputation(company, empWagePerHour, maxHoursAMonth, workingDayMonth);
+        noOfCompany++;
     }
 
-    public void computeEmpWage() {
-        //variables
-        int empHrs = 0, totalEmpHrs = 0;
-        int totalWorkingDays = 0;
-        //Computation
-        while( totalEmpHrs <= maxHoursPerMonth && totalWorkingDays < numOfWorkingDays) {
-            totalWorkingDays++;
-            int empCheck = (int) Math.floor(Math.random() * 10) % 3;
-            switch (empCheck) {
-                case IS_PART_TIME:
-                    empHrs = 4;
-                    break;
-                case IS_FULL_TIME:
-                    empHrs = 8;
-                    break;
-                default:
-                    empHrs = 0;
-            }
-            totalEmpHrs += empHrs;
-            System.out.println("Day#: " + totalWorkingDays + " Emp Hr: " + empHrs);
+    private void computeEmpWage() {
+        for(int i=0; i<noOfCompany; i++) {
+            compEmpWageArray[i].setTotalEmpWage(this.computeEmpWage(compEmpWageArray[i]));
+            System.out.println(compEmpWageArray[i]);
+            System.out.println("\n");
         }
-        totalEmpWage = totalEmpHrs * empRatePerHour;
     }
 
-    @Override
-    public String toString() {
-        return "Total Emp Wage for Company: " + company + " is: " + totalEmpWage;
-    }
+    private int computeEmpWage(EmployeeWageComputation employeewage) {
+        //variables
+        int empHours=0, totalEmpHours=0, totalWorkingDays=0;
+        //Computation
+        while(totalEmpHours<employeewage.maxHoursAMonth && totalWorkingDays<employeewage.workingDayMonth) {
+            totalWorkingDays++;
+            int empCheck=(int) (Math.floor(Math.random()*10)%3);
+            switch(empCheck) {
+                case IS_FULL_TIME:
+                    empHours=8;
+                    break;
+                case IS_PART_TIME:
+                    empHours=4;
+                    break;
 
+                default:
+                    empHours=0;
+            }
+            if (totalEmpHours<96) {
+                totalEmpHours+=empHours;
+                System.out.println("Days : "+totalWorkingDays+"\tEmployee hour : "+empHours+"\tTotal hours "+totalEmpHours);
+            }
+            else {
+                totalEmpHours+=(100-totalEmpHours);
+                System.out.println("Days : "+totalWorkingDays+"\tEmployee hour : "+empHours+"\tTotal hours "+totalEmpHours);
+                break;
+            }
+        }
+        return totalEmpHours*employeewage.empWagePerHour;
+    }
     public static void main(String[] args) {
-        EmployeeWageBuilder amazon = new EmployeeWageBuilder("Amazon", 20, 2, 10);
-        EmployeeWageBuilder flipkart = new EmployeeWageBuilder("Flipkart", 10, 4, 20);
-        amazon.computeEmpWage();
-        System.out.println(amazon);
-        flipkart.computeEmpWage();
-        System.out.println(flipkart);
+        //Welcome statement
+        System.out.println("Welcome to Employee wage computation");
+        EmployeeWageBuilder empWage=new EmployeeWageBuilder();
+        empWage.addCompanyEmpWage("Amazon", 10, 100, 20);
+        empWage.addCompanyEmpWage("Flipkart", 8, 100, 22);
+        empWage.addCompanyEmpWage("eBay", 20, 100, 20);
+        empWage.computeEmpWage();
     }
 }
